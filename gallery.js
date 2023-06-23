@@ -167,7 +167,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var max_guided_backprop_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('guided_backprop_max_gaussian_fit').innerHTML = `MUX = ${max_guided_backprop_gaussian_fit['MUX']}, MUY = ${max_guided_backprop_gaussian_fit['MUY']}, FXVAR = ${max_guided_backprop_gaussian_fit['FXVAR']}`;
+            document.getElementById('guided_backprop_max_gaussian_fit').innerHTML = `Max MUX = ${max_guided_backprop_gaussian_fit['MUX']}, MUY = ${max_guided_backprop_gaussian_fit['MUY']}, FXVAR = ${max_guided_backprop_gaussian_fit['FXVAR']}`;
         }
     );
 
@@ -175,7 +175,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var min_guided_backprop_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('guided_backprop_min_gaussian_fit').innerHTML = `MUX = ${min_guided_backprop_gaussian_fit['MUX']}, MUY = ${min_guided_backprop_gaussian_fit['MUY']}, FXVAR = ${min_guided_backprop_gaussian_fit['FXVAR']}`;
+            document.getElementById('guided_backprop_min_gaussian_fit').innerHTML = `Min MUX = ${min_guided_backprop_gaussian_fit['MUX']}, MUY = ${min_guided_backprop_gaussian_fit['MUY']}, FXVAR = ${min_guided_backprop_gaussian_fit['FXVAR']}`;
         }
     );
 
@@ -187,7 +187,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var max_rfmp4a_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('rfmp4a_max_gaussian_fit').innerHTML = `MUX = ${max_rfmp4a_gaussian_fit['MUX']}, MUY = ${max_rfmp4a_gaussian_fit['MUY']}, FXVAR = ${max_rfmp4a_gaussian_fit['FXVAR']}`;
+            document.getElementById('rfmp4a_max_gaussian_fit').innerHTML = `Max MUX = ${max_rfmp4a_gaussian_fit['MUX']}, MUY = ${max_rfmp4a_gaussian_fit['MUY']}, FXVAR = ${max_rfmp4a_gaussian_fit['FXVAR']}`;
         }
     );
 
@@ -195,7 +195,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var min_rfmp4a_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('rfmp4a_min_gaussian_fit').innerHTML = `MUX = ${min_rfmp4a_gaussian_fit['MUX']}, MUY = ${min_rfmp4a_gaussian_fit['MUY']}, FXVAR = ${min_rfmp4a_gaussian_fit['FXVAR']}`;
+            document.getElementById('rfmp4a_min_gaussian_fit').innerHTML = `Min MUX = ${min_rfmp4a_gaussian_fit['MUX']}, MUY = ${min_rfmp4a_gaussian_fit['MUY']}, FXVAR = ${min_rfmp4a_gaussian_fit['FXVAR']}`;
         }
     );
 
@@ -207,7 +207,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var max_rfmp4c7o_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('rfmp4c7o_max_gaussian_fit').innerHTML = `MUX = ${max_rfmp4c7o_gaussian_fit['MUX']}, MUY = ${max_rfmp4c7o_gaussian_fit['MUY']}, FXVAR = ${max_rfmp4c7o_gaussian_fit['FXVAR']}`;
+            document.getElementById('rfmp4c7o_max_gaussian_fit').innerHTML = `Max MUX = ${max_rfmp4c7o_gaussian_fit['MUX']}, MUY = ${max_rfmp4c7o_gaussian_fit['MUY']}, FXVAR = ${max_rfmp4c7o_gaussian_fit['FXVAR']}`;
         }
     );
 
@@ -215,7 +215,7 @@ function load_gaussian_fit()
         .then(response => response.json())
         .then(data => {
             var min_rfmp4c7o_gaussian_fit = data[`${layer}`][`${unit_id}`];
-            document.getElementById('rfmp4c7o_min_gaussian_fit').innerHTML = `MUX = ${min_rfmp4c7o_gaussian_fit['MUX']}, MUY = ${min_rfmp4c7o_gaussian_fit['MUY']}, FXVAR = ${min_rfmp4c7o_gaussian_fit['FXVAR']}`;
+            document.getElementById('rfmp4c7o_min_gaussian_fit').innerHTML = `Min MUX = ${min_rfmp4c7o_gaussian_fit['MUX']}, MUY = ${min_rfmp4c7o_gaussian_fit['MUY']}, FXVAR = ${min_rfmp4c7o_gaussian_fit['FXVAR']}`;
         }
     );
 }
@@ -226,6 +226,86 @@ function load_natural_img_index() {
         .then(response => response.json())
         .then(data => {
             natural_image_indicies = data;
+        }
+    );
+}
+
+function load_correlation() {
+    var rfmp4a_max_correlation_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/correlation/${model_name}/gt_vs_rfmp4a/max_${layer}.json`;
+    var rfmp4a_min_correlation_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/correlation/${model_name}/gt_vs_rfmp4a/min_${layer}.json`;
+
+    fetch(rfmp4a_max_correlation_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4a_max_correlation = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4a_max_correlation').innerHTML = `Max correlation = ${rfmp4a_max_correlation}`;
+        }
+    );
+
+    fetch(rfmp4a_min_correlation_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4a_min_correlation = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4a_min_correlation').innerHTML = `Min correlation = ${rfmp4a_min_correlation}`;
+        }
+    );
+
+    var rfmp4c7o_max_correlation_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/correlation/${model_name}/gt_vs_rfmp4c7o/max_${layer}.json`;
+    var rfmp4c7o_min_correlation_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/correlation/${model_name}/gt_vs_rfmp4c7o/min_${layer}.json`;
+
+    fetch(rfmp4c7o_max_correlation_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4c7o_max_correlation = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4c7o_max_correlation').innerHTML = `Max correlation = ${rfmp4c7o_max_correlation}`;
+        }
+    );
+
+    fetch(rfmp4c7o_min_correlation_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4c7o_min_correlation = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4c7o_min_correlation').innerHTML = `Min correlation = ${rfmp4c7o_min_correlation}`;
+        }
+    );
+}
+
+function load_iou() {
+    var rfmp4a_max_iou_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/iou/${model_name}/gt_vs_rfmp4a/max_${layer}.json`;
+    var rfmp4a_min_iou_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/iou/${model_name}/gt_vs_rfmp4a/min_${layer}.json`;
+
+    fetch(rfmp4a_max_iou_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4a_max_iou = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4a_max_iou').innerHTML = `Max IoU = ${rfmp4a_max_iou}`;
+        }
+    );
+
+    fetch(rfmp4a_min_iou_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4a_min_iou = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4a_min_iou').innerHTML = `Min IoU = ${rfmp4a_min_iou}`;
+        }
+    );
+
+    var rfmp4c7o_max_iou_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/iou/${model_name}/gt_vs_rfmp4c7o/max_${layer}.json`;
+    var rfmp4c7o_min_iou_url = `https://s3.us-west-2.amazonaws.com/cnn-database/stats/iou/${model_name}/gt_vs_rfmp4c7o/min_${layer}.json`;
+
+    fetch(rfmp4c7o_max_iou_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4c7o_max_iou = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4c7o_max_iou').innerHTML = `Max IoU = ${rfmp4c7o_max_iou}`;
+        }
+    );
+
+    fetch(rfmp4c7o_min_iou_url)
+        .then(response => response.json())
+        .then(data => {
+            var rfmp4c7o_min_iou = data[`${layer}`][`${unit_id}`];
+            document.getElementById('rfmp4c7o_min_iou').innerHTML = `Min IoU = ${rfmp4c7o_min_iou}`;
         }
     );
 }
@@ -316,7 +396,9 @@ function load_stats()
 {
     load_cri();
     load_fnat();
-    load_gaussian_fit()
+    load_gaussian_fit();
+    load_correlation();
+    load_iou();
 }
 
 let natural_image_indicies;
