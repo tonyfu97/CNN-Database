@@ -68,7 +68,6 @@ model_name_menu.addEventListener('change', async (event) => {
     load_stats();
 });
 
-let natural_image_indicies;
 // layer dropdown menu logic:
 layer_menu.addEventListener('change', async (event) => {
     layer = layer_menu.value;
@@ -249,12 +248,12 @@ function load_natural_img() {
     for (var i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["max_img_idx"];
         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["max_idx"]; // [x, y, width, height]
-        drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images/${img_index}.png`, x_y_width_height);
+        drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
     }
     for (var i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["min_img_idx"];
         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["min_idx"]; // [x, y, width, height]
-        drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images/${img_index}.png`, x_y_width_height);
+        drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
     }
 }
 
@@ -307,8 +306,6 @@ function load_rfmp4c7o_img() {
 
 // show the photos that exist in an album.
 function load_img() {
-    load_natural_img_index();
-
     load_natural_img();
     load_guided_backprop_img();
     load_rfmp4a_img();
@@ -322,7 +319,9 @@ function load_stats()
     load_gaussian_fit()
 }
 
+let natural_image_indicies;
 init_natural_img();
 load_natural_img_index();
 load_img();
 load_stats();
+
