@@ -310,31 +310,91 @@ function load_iou() {
     );
 }
 
+// function init_natural_img() {
+//     var html_template = ["<div>"];
+//     for (var i = 0; i < 5; i++) {
+//         html_template.push(`<canvas id="canvas${i}max" width="227" height="227"></canvas>`);
+//     }
+//     html_template.push("</div>");
+//     html_template.push("<div>");
+//     for (var i = 0; i < 5; i++) {
+//         html_template.push(`<canvas id="canvas${i}min" width="227" height="227"></canvas>`);
+//     }
+//     html_template.push("</div>");
+//     document.getElementById("natural_image_div").innerHTML = getHtml(html_template);
+// }
+
+// function load_natural_img() {
+//     for (var i = 0; i < 5; i++) {
+//         var img_index = natural_image_indicies[`${unit_id}`][i]["max_img_idx"];
+//         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["max_idx"]; // [x, y, width, height]
+//         drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
+//     }
+//     for (var i = 0; i < 5; i++) {
+//         var img_index = natural_image_indicies[`${unit_id}`][i]["min_img_idx"];
+//         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["min_idx"]; // [x, y, width, height]
+//         drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
+//     }
+// }
+
+// This object will keep track of the current state of each canvas
+var canvasStates = {};
+
 function init_natural_img() {
     var html_template = ["<div>"];
     for (var i = 0; i < 5; i++) {
         html_template.push(`<canvas id="canvas${i}max" width="227" height="227"></canvas>`);
+        // Initialize the state for this canvas
+        canvasStates[`canvas${i}max`] = { toggled: false, img_index: 0 };
     }
     html_template.push("</div>");
     html_template.push("<div>");
     for (var i = 0; i < 5; i++) {
         html_template.push(`<canvas id="canvas${i}min" width="227" height="227"></canvas>`);
+        // Initialize the state for this canvas
+        canvasStates[`canvas${i}min`] = { toggled: false, img_index: 0 };
     }
     html_template.push("</div>");
     document.getElementById("natural_image_div").innerHTML = getHtml(html_template);
 }
 
 function load_natural_img() {
-    for (var i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["max_img_idx"];
         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["max_idx"]; // [x, y, width, height]
+        canvasStates[`canvas${i}max`].img_index = img_index;
+        canvasStates[`canvas${i}max`].x_y_width_height = x_y_width_height;
         drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
+        // Add the event listener
+        document.getElementById(`canvas${i}max`).addEventListener('click', function() { toggleImage(`canvas${i}max`, i, 'max'); });
     }
-    for (var i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["min_img_idx"];
         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["min_idx"]; // [x, y, width, height]
+        canvasStates[`canvas${i}min`].img_index = img_index;
+        canvasStates[`canvas${i}min`].x_y_width_height = x_y_width_height;
         drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
+        // Add the event listener
+        document.getElementById(`canvas${i}min`).addEventListener('click', function() { toggleImage(`canvas${i}min`, i, 'min'); });
     }
+}
+
+function toggleImage(canvasId, index, maxOrMin) {
+    var canvasState = canvasStates[canvasId];
+    var imageUrl;
+
+    // Toggle the state
+    canvasState.toggled = !canvasState.toggled;
+
+    // Choose the correct image URL based on the new state
+    if (canvasState.toggled) {
+        imageUrl = `https://s3.us-west-2.amazonaws.com/cnn-database/guided_backprop_individual/${model_name}/${layer}/${unit_id}_${maxOrMin}${index}.png`;
+    } else {
+        imageUrl = `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(canvasState.img_index/1000)}/${canvasState.img_index}.png`;
+    }
+
+    // Redraw the image
+    drawRectangleOnImage(canvasId, imageUrl, canvasState.x_y_width_height);
 }
 
 function drawRectangleOnImage(canvasId, imageUrl, rectDimensions) {
@@ -364,7 +424,6 @@ function drawRectangleOnImage(canvasId, imageUrl, rectDimensions) {
     // Start loading the image
     image.src = imageUrl;
 }
-
 
 function load_guided_backprop_img() {
     var max_img_url = `https://s3.us-west-2.amazonaws.com/cnn-database/guided_backprop/${model_name}/${layer}/max_${unit_id}.png`;
