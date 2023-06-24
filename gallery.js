@@ -310,33 +310,6 @@ function load_iou() {
     );
 }
 
-// function init_natural_img() {
-//     var html_template = ["<div>"];
-//     for (var i = 0; i < 5; i++) {
-//         html_template.push(`<canvas id="canvas${i}max" width="227" height="227"></canvas>`);
-//     }
-//     html_template.push("</div>");
-//     html_template.push("<div>");
-//     for (var i = 0; i < 5; i++) {
-//         html_template.push(`<canvas id="canvas${i}min" width="227" height="227"></canvas>`);
-//     }
-//     html_template.push("</div>");
-//     document.getElementById("natural_image_div").innerHTML = getHtml(html_template);
-// }
-
-// function load_natural_img() {
-//     for (var i = 0; i < 5; i++) {
-//         var img_index = natural_image_indicies[`${unit_id}`][i]["max_img_idx"];
-//         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["max_idx"]; // [x, y, width, height]
-//         drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
-//     }
-//     for (var i = 0; i < 5; i++) {
-//         var img_index = natural_image_indicies[`${unit_id}`][i]["min_img_idx"];
-//         var x_y_width_height = natural_image_indicies[`${unit_id}`][i]["min_idx"]; // [x, y, width, height]
-//         drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
-//     }
-// }
-
 // This object will keep track of the current state of each canvas
 var canvasStates = {};
 
@@ -358,6 +331,17 @@ function init_natural_img() {
     document.getElementById("natural_image_div").innerHTML = getHtml(html_template);
 }
 
+function debounce(func, wait) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
 function load_natural_img() {
     for (let i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["max_img_idx"];
@@ -365,8 +349,9 @@ function load_natural_img() {
         canvasStates[`canvas${i}max`].img_index = img_index;
         canvasStates[`canvas${i}max`].x_y_width_height = x_y_width_height;
         drawRectangleOnImage(`canvas${i}max`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
-        // Add the event listener
-        document.getElementById(`canvas${i}max`).addEventListener('click', function() { toggleImage(`canvas${i}max`, i, 'max'); });
+
+        // Add the event listener with debouncing
+        document.getElementById(`canvas${i}max`).addEventListener('click', debounce(function() { toggleImage(`canvas${i}max`, i, 'max'); }, 100));
     }
     for (let i = 0; i < 5; i++) {
         var img_index = natural_image_indicies[`${unit_id}`][i]["min_img_idx"];
@@ -374,8 +359,9 @@ function load_natural_img() {
         canvasStates[`canvas${i}min`].img_index = img_index;
         canvasStates[`canvas${i}min`].x_y_width_height = x_y_width_height;
         drawRectangleOnImage(`canvas${i}min`, `https://s3.us-west-2.amazonaws.com/cnn-database/natural_images2/folder_${Math.floor(img_index/1000)}/${img_index}.png`, x_y_width_height);
-        // Add the event listener
-        document.getElementById(`canvas${i}min`).addEventListener('click', function() { toggleImage(`canvas${i}min`, i, 'min'); });
+
+        // Add the event listener with debouncing
+        document.getElementById(`canvas${i}min`).addEventListener('click', debounce(function() { toggleImage(`canvas${i}min`, i, 'min'); }, 100));
     }
 }
 
